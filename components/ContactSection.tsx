@@ -1,5 +1,6 @@
-import React from 'react';
-import { motion, Variants } from 'framer-motion';
+
+import React, { useState } from 'react';
+import { motion, Variants, AnimatePresence } from 'framer-motion';
 
 const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -15,6 +16,18 @@ const itemVariants: Variants = {
 };
 
 const ContactSection: React.FC = () => {
+    const [formState, setFormState] = useState<{ status: 'idle' | 'submitting' | 'submitted' }>({ status: 'idle' });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        setFormState({ status: 'submitting' });
+        // Simulate API call
+        setTimeout(() => {
+            setFormState({ status: 'submitted' });
+        }, 2000);
+    };
+
+
     return (
         <section id="contact" className="py-16 md:py-24 px-6 bg-white overflow-hidden">
             <motion.div
@@ -51,26 +64,51 @@ const ContactSection: React.FC = () => {
                             </div>
                         </motion.div>
                     </div>
-                    <motion.form 
-                        variants={containerVariants}
-                        className="bg-slate-50 p-8 rounded-lg shadow-md space-y-6"
-                    >
-                        <motion.div variants={itemVariants}>
-                            <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                            <input type="text" id="name" name="name" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="John Doe" />
-                        </motion.div>
-                        <motion.div variants={itemVariants}>
-                            <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-                            <input type="email" id="email" name="email" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="you@example.com" />
-                        </motion.div>
-                        <motion.div variants={itemVariants}>
-                            <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">Message</label>
-                            <textarea id="message" name="message" rows={5} className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Your message..."></textarea>
-                        </motion.div>
-                        <motion.button variants={itemVariants} type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                            Send Message
-                        </motion.button>
-                    </motion.form>
+                    <div className="bg-slate-50 p-8 rounded-lg shadow-md">
+                        <AnimatePresence mode="wait">
+                            {formState.status === 'submitted' ? (
+                                <motion.div
+                                    key="success"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="text-center py-12"
+                                >
+                                    <div className="mx-auto bg-primary-light text-primary rounded-full h-16 w-16 flex items-center justify-center mb-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-2">Thank You!</h3>
+                                    <p className="text-slate-600">Your message has been sent successfully. We'll be in touch soon.</p>
+                                </motion.div>
+                            ) : (
+                                <motion.form
+                                    key="form"
+                                    variants={containerVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit={{ opacity: 0, y: -20 }}
+                                    className="space-y-6"
+                                    onSubmit={handleSubmit}
+                                >
+                                    <motion.div variants={itemVariants}>
+                                        <label htmlFor="name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                                        <input type="text" id="name" name="name" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="John Doe" required disabled={formState.status === 'submitting'} />
+                                    </motion.div>
+                                    <motion.div variants={itemVariants}>
+                                        <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                                        <input type="email" id="email" name="email" className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="you@example.com" required disabled={formState.status === 'submitting'} />
+                                    </motion.div>
+                                    <motion.div variants={itemVariants}>
+                                        <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+                                        <textarea id="message" name="message" rows={5} className="w-full px-4 py-2 border border-slate-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Your message..." required disabled={formState.status === 'submitting'}></textarea>
+                                    </motion.div>
+                                    <motion.button variants={itemVariants} type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 disabled:bg-primary/70 disabled:scale-100" disabled={formState.status === 'submitting'}>
+                                        {formState.status === 'submitting' ? 'Sending...' : 'Send Message'}
+                                    </motion.button>
+                                </motion.form>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </div>
             </motion.div>
         </section>

@@ -48,7 +48,10 @@ const Footer: React.FC = () => {
             <h4 className="font-semibold text-white mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li><a href="#about" className="hover:text-white transition-colors">About Us</a></li>
+              <li><a href="#team" className="hover:text-white transition-colors">Our Team</a></li>
               <li><a href="#work" className="hover:text-white transition-colors">Our Work</a></li>
+              <li><a href="#gallery" className="hover:text-white transition-colors">Gallery</a></li>
+              <li><a href="#events" className="hover:text-white transition-colors">Events</a></li>
               <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
               <li><a href="#blog" className="hover:text-white transition-colors">Blog</a></li>
               <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
@@ -75,7 +78,7 @@ const Footer: React.FC = () => {
           </motion.div>
         </div>
         <motion.div variants={footerItemVariants} className="mt-12 pt-8 border-t border-slate-700 text-center text-sm">
-          <p>&copy; {currentYear} Hopeful Horizons. All Rights Reserved.</p>
+          <p>&copy; {currentYear} Hopeful Horizons. All Rights Reserved. &nbsp;|&nbsp; <a href="#" className="hover:text-white transition-colors underline">Privacy Policy</a></p>
         </motion.div>
       </div>
     </motion.footer>
